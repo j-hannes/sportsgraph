@@ -1,0 +1,78 @@
+<!doctype html>
+<html>
+  <head>
+    <title>sports graph</title>
+    <style>
+      #line {
+        position: fixed;
+        height: 1120px;
+        top: 0;
+        left: 0;
+        border-left: 1px solid #ccc;
+        opacity: 0.8;
+      }
+    </style>
+  </head>
+  <body>
+    <p>Altitude (m)</p>
+    <canvas id="altitude" width="1900" height="300"></canvas>
+    <p>Heart Rate (bpm)</p>
+    <canvas id="heartRate" width="1900" height="300"></canvas>
+    <p>Speed (km/h)</p>
+    <canvas id="speed" width="1900" height="300"></canvas>
+    <div id="line"></div>
+    <script src="ramda.js"></script>
+    <script src="chart.js"></script>
+    <script src="moment.js"></script>
+    <script src="5-miles-mtgannelon.js"></script>
+    <script src="convertRunData.js"></script>
+    <script>
+      var getLabels = R.compose(R.pluck('secondsPassed'))//, R.take(1850))
+      //var labels = R.map(function(){return ''}, getLabels(runData))
+var labels = R.map(function(seconds) {return Math.round(Number(seconds)/60)}, getLabels(runData))
+      var getAltitudes = R.compose(R.pluck('altitudeMeters'))//, R.take(1850))
+      var getSpeed = R.compose(R.pluck('speedKmh'))//, R.take(1850))
+      var getHeartRates = R.compose(R.pluck('heartRateBpm'))//, R.take(1850))
+      var altitudes = getAltitudes(runData)
+      var speed = getSpeed(runData)
+      var heartRates = getHeartRates(runData)
+
+      var createChart = function(containerElId, values, r, g, b, beginsAtZero, indScale) {
+        var chartData = {
+          labels : labels,
+          datasets : [
+            {
+              fillColor : "rgba("+r+","+g+","+b+",0.2)",
+              strokeColor : "rgba("+r+","+g+","+b+",1)",
+              pointColor : "#fff",
+              data : values
+            }
+          ]
+        }
+        var chart = document.getElementById(containerElId).getContext('2d');
+        var options = {
+          pointDot: false,
+          pointDotRadius : 5,
+          scaleBeginAtZero: beginsAtZero,
+          tooltipTemplate: "<%= value %>",
+        }
+        if (indScale) {
+          options.scaleOverride = true
+          options.scaleSteps = 7
+          options.scaleStepWidth = 20
+          options.scaleStartValue = 0
+        }
+        new Chart(chart).Line(chartData, options);
+      }
+
+      createChart('altitude', altitudes, 172, 194, 132, false, true)
+      createChart('heartRate', heartRates, 205, 151, 150)
+      createChart('speed', speed, 151, 187, 205, true)
+  
+      var line = document.getElementById('line')
+      document.body.onmousemove = function(event) {
+        line.style.left = event.x + 'px'
+      }
+    </script>
+  </body>
+</html>

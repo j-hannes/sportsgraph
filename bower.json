@@ -1,0 +1,20 @@
+{
+  "name": "sportsgraph",
+  "version": "0.0.0",
+  "authors": [
+    "Jay Hannes <Hannes_E@gmx.de>"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "chartjs": "v1.0.1-beta.4",
+    "moment": "~2.8.4",
+    "ramda": "~0.8.0"
+  }
+}
